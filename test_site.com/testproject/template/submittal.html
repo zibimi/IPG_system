@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+{% load bootstrap_toolkit %} {% load url from future %}
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/popup/popModal.min.css">
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+<link href="/static/multiselect/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/submittal.css">
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+</head>
+<body>
+{% if name %}
+	{% csrf_token %}
+
+
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <span class="brand">Hello {{ name }}</span>
+	        <ul class="nav">
+	            <li><a href="/requisition/">Requisition</a></li>
+	            <li><a href="/candidate/">Party</a></li>
+	            <li class="active"><a href="/submittal/">Submittal</a></li>
+	            <!-- <li><a id="filter_button" data-dialogmodal-bind="#filter">Filter</a></li>
+	            <li><a id="add_button" data-dialogmodal-bind="#addbox_div">Add</a></li> -->
+	            <li class="" rtype="submit" role="button"><a href="/logout/">Log Out</a></li>
+	        </ul>
+	    </div>
+	</div>
+	<div>
+	{% block content%}
+		<div id="addbox">
+			<div id="addbox_div"  class="dialog_content" style="display:none">
+				<form action='/add_submittal/' method='POST' class="form-horizontal">
+					<div class="dialogModal_header">Add Submittal</div>
+					<div class="dialogModal_content">
+						<div class="control-group required">
+							<label for="candidate" class="control-label">candidate</label>
+							<div class="controls">
+								<select  name="candidate" id="candidate" >
+										{% for a in party%}
+										<option value="{{a.id}}">{{a}}</option> 
+										{% endfor %}		
+								</select>
+								<span class="add-on"><i class="icon-plus party_group"></i></span>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="recruiter" class="control-label">recruiter</label>
+							<div class="controls">
+								<select  name="recruiter" id="recruiter" >
+										{% for a in party%}
+										<option value="{{a.id}}">{{a}}</option> 
+										{% endfor %}		
+								</select>
+								<span class="add-on"><i class="icon-plus party_group" ></i></span>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="job_id" class="control-label">job_id</label>
+							<div class="controls">
+								<select  name="job_id" id="job_id" >
+										{% for a in requisition %}
+										<option value="{{a.id}}">{{a.job_id}}</option> 
+										{% endfor %}		
+								</select>
+								<span class="add-on"><i class="icon-plus requisition_group" ></i></span>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="hourly_rate" class="control-label">hourly_rate</label>
+							<div class="controls">
+								<input required="required" type="text"  name="hourly_rate" id="hourly_rate">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="current_year_rate" class="control-label">current_year_rate</label>
+							<div class="controls">
+								<input required="required" type="text"  name="current_year_rate" id="current_year_rate">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="expected_year_rate" class="control-label">expected_year_rate</label>
+							<div class="controls">
+								<input required="required" type="text"  name="expected_year_rate" id="expected_year_rate">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="interview_available" class="control-label">interview_available</label>
+							<div class="controls">
+								<input required="required" type="text"  name="interview_available" id="interview_available">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="start_available" class="control-label">start_available</label>
+							<div class="controls">
+								<input required="required" type="text"  name="start_available" id="start_available">
+							</div>
+						</div>
+						<div class="control-group required"> 
+							<label for="interview_feedback" class="control-label">interview_feedback</label>
+							<div class="controls">
+								<textarea required="required" title="interview_feedback" rows="10" name="interview_feedback" maxlength="1000" id="interview_feedback" cols="40"></textarea>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="status" class="control-label">status</label>
+							<div class="controls">
+								<input required="required" type="text"  name="status" id="status">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="interview_date" class="control-label">interview_date</label>
+							<div class="controls">
+								<div class="input-append">
+							    	<input required="required" type="text"  name="interview_date" id="interview_date" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+							    <span class="add-on"><i class="icon-calendar"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="dialogModal_footer">
+						<button  id="add_confirm" type="submit" class="btn btn-default" data-dialogmodal-but="ok">confirm</button>
+						<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="box">
+			<div id="filter" class="dialog_content" style="display:none">
+				<div class="dialogModal_header">Filter</div>
+				<div class="dialogModal_content">
+					<table>
+						<tbody>
+							<tr> 
+								<td><lable>Recruiter: </br><select id="s_recruiter">
+										<option value="all" selected="selected">All</option> 
+										{% for a in all_objects%}
+										<option value="{{a.recruiter}}">{{a.recruiter}}</option>
+										{% endfor %}
+								</select> </lable></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="dialogModal_footer">
+					<button  id="filter_confirm" type="button" class="btn btn-default" data-dialogmodal-but="ok">confirm</button>
+					<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">cancel</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="editButtons" class="">
+			<button id="filter_button" class="btn btn-default" type="button" data-dialogmodal-bind="#filter">Filter</button>
+			<button id="add_button" class="btn btn-default" type="button" data-dialogmodal-bind="#addbox_div">Add</button>
+		</div>
+
+		<!-- data table start -->
+
+			<table id="table1" class="display" cellspacing="0" width="80%">
+				<thead>
+					<tr>						
+						<th style="width:30px;"></th>
+						<!-- <th style="width:30px;"></th> -->
+						<th><strong>ID</strong></th>
+						<th style="width: 20px;"><strong>job_id</strong></th>
+						<th style="width: 25px;"><strong>candidate</strong></th>
+						<th style="width: 25px;"><strong>recruiter</strong></th>
+						<th style="width: 50px;"><strong>date</strong></th><!-- set -->
+						<th style="width: 50px;"><strong>status</strong></th>
+						<th style="width: 50px;"><strong>interview_date</strong></th>
+					</tr>
+				</thead>
+			</table>
+			{% endblock %}
+	
+		<!-- data table start -->
+	</div>	
+	{% else %}
+	hehe 
+	{% endif %}
+
+	<div id="show_box">
+		<div id="show_div"  class="dialog_content" style="display:none">
+			<div class="dialogModal_header">Details</div>
+			<div class="dialogModal_content">
+				<table id="table_show" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th><strong>Item</strong></th>
+							<th><strong>value</strong></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="dialogModal_footer"></div>
+		</div>
+	</div>
+
+<script src="/static/popup/popModal.min.js"></script>
+<script type="text/javascript">
+var dataSet = {{data|safe}};
+
+function format ( d ) {
+    return '<strong>hourly_rate</strong>: $' + d.hourly_rate + '<br>'+
+    	'<strong>current_year_rate </strong>: ' + d.current_year_rate +'<br>'+
+    	'<strong>expected_year_rate</strong>: '+ d.expected_year_rate +' <br/>' +
+        '<strong>interview_available</strong>: ' + d.interview_available +'<br>'+
+        '<strong>start_available</strong>: ' + d.start_available +'<br>'+
+        '<strong>interview_feedback</strong>: ' + d.interview_feedback +'<br>';
+}
+
+
+var s_recruiter = $('#s_recruiter').val();
+
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+
+
+        var d_recruiter = data[4];
+        if ((s_recruiter == "all" || s_recruiter == d_recruiter))
+        {
+            return true;
+        }
+        return false;
+    }
+);
+
+$(document).ready( function () {
+	var dt = $('#table1').DataTable( {
+		"responsive": true,
+		"paging": true,
+		"ordering" : true,
+		"data": dataSet["data"],
+		"columns": [
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ""
+            },
+            // {
+            //     "class":          "submit-control",
+            //     "orderable":      false,
+            //     "data":           null,
+            //     "defaultContent": "submit"
+            // },
+            { 
+            	"class": "id_row",
+            	"data": "id" 
+            },
+            { 
+            	"class": "ipg_req_id_row",
+            	"data": "job_id" 
+            },
+            { 
+            	"class": "candidate_row",
+            	"data": "candidate" 
+            },
+            { 
+            	"class": "recruiter_row",
+            	"data": "recruiter" 
+            },
+            { "data": "date" },
+            { "data": "status" },
+            { "data": "interview_date"}
+        ],
+         "order": [[1, 'asc']]
+	} );
+
+	// $('.submit-control').removeClass('sorting_asc');
+	// $('.submit-control').addClass('sort_disabled');
+	// $('.submit-control').click(function() {
+	// 	console.log("what!");
+	// })
+
+	// Event listener to the two range filtering inputs to redraw on input
+
+
+	var html_filter='';
+	$('#filter_button').click(function(){
+		$('#filter').dialogModal({
+			onLoad: function() {
+				html_filter = $('#box').html();
+				$('#box').empty()
+			},
+			onOkBut: function() {
+				s_recruiter = $('#s_recruiter').val();
+				dt.draw();
+				$('#box').html(html_filter);
+			},
+			onClose: function() {
+				$('#box').html(html_filter);
+			},
+			onCancelBut: function() {
+				$('#box').html(html_filter);
+			}
+		});
+	});
+
+	var html_add = '';
+
+	$('#add_button').click(function(){
+		$('#addbox_div').dialogModal({
+		onLoad: function() {
+			html_add = $('#addbox').html();
+			$('#addbox').empty()
+		},
+		onOkBut: function() {
+		$('#addbox').html(html_add);
+		return false;
+		},
+		onClose: function() {
+			$('#addbox').html(html_add);
+		},
+		onCancelBut: function() {
+			$('#addbox').html(html_add);
+		},
+		});
+
+		$('.party_group').bind('click', function(){
+			$(".dialogModal").css("display", "none");  
+			swal({   
+			        title: "Are you sure?",   
+			        text: "You will be redirect to other pages!",   
+			        type: "warning",   
+			        showCancelButton: true,   
+			        confirmButtonColor: "#DD6B55",   
+			        confirmButtonText: "Yes, Redirect!",   
+			        cancelButtonText: "No, cancel plx!",   
+			        closeOnConfirm: false,   
+			        closeOnCancel: false 
+			    }, 
+
+			    function(isConfirm){   
+			    if (isConfirm) {     
+			        swal("Redirecting!", "You will be redirected soon.", "success");   
+
+			        self.location = '/candidate/';
+
+			    } else 
+			    {     
+ 
+			        $(".dialogModal").css("display", "block");  
+			    } 
+			});
+		});
+		
+
+	  $('#hourly_rate , #current_year_rate, #expected_year_rate').keyup( function() {
+	       
+	       var a = $('#hourly_rate').val();
+	       var b = $('#current_year_rate').val();
+	       var c = $('#expected_year_rate').val();
+	       if (a != '' && b == '' ) {
+	       	 	$('#current_year_rate').attr('disabled', 'disabled');
+	       	 	$('#expected_year_rate').attr('disabled', 'disabled');
+	       	 	$('#current_year_rate').removeAttr('required');
+	       	 	$('#expected_year_rate').removeAttr('required');
+	       	 	$('#current_year_rate').attr('value','');
+	       	 	$('#expected_year_rate').attr('value','');
+
+	       } else if (a == '' &&  b == ''){
+	       		$('#current_year_rate').removeAttr('disabled');
+	       	 	$('#expected_year_rate').removeAttr('disabled');
+	       	 	$('#current_year_rate').attr('required', 'required');
+	       	 	$('#expected_year_rate').attr('required', 'required');
+	       	 	$('#hourly_rate').removeAttr('disabled');
+	       	 	$('#hourly_rate').attr('required', 'required');
+
+	       } else if (b != '' && a == '') {
+	       		$('#hourly_rate').attr('disabled', 'disabled');
+	       	 	$('#expected_year_rate').removeAttr('disabled');
+	       	 	$('#hourly_rate').removeAttr('required');
+	       	 	$('#expected_year_rate').attr('required','required');
+	       	 	$('#hourly_rate').attr('value','');
+	       } 
+
+	    } );
+
+
+		$('.requisition_group').bind('click', function(){
+			$(".dialogModal").css("display", "none");  
+			swal({   
+			        title: "Are you sure?",   
+			        text: "You will be redirect to other pages!",   
+			        type: "warning",   
+			        showCancelButton: true,   
+			        confirmButtonColor: "#DD6B55",   
+			        confirmButtonText: "Yes, Redirect!",   
+			        cancelButtonText: "No, cancel plx!",   
+			        closeOnConfirm: false,   
+			        closeOnCancel: false 
+			    }, 
+
+			    function(isConfirm){   
+			    if (isConfirm) {     
+			        swal("Redirecting!", "You will be redirected soon.", "success");   
+
+			        self.location = '/requisition/';
+
+			    } else 
+			    {     
+			       
+			        $(".dialogModal").css("display", "block");  
+			    } 
+			    });
+			});
+		});
+
+		var dt_show;
+		var html_show = '';
+	 	// $('#table1 tbody').on( 'click', 'tr td:nth-of-type(3n)', function () {
+	 	$('#table1 tbody').on( 'click', 'tr td.ipg_req_id_row', function () {
+	 		var id = $(this).prev().text();
+	 		$('#show_div').dialogModal({
+				onLoad: function() {
+					html_show = $('#show_box').html();
+					$('#show_box').empty()
+				},
+				onOkBut: function() {
+					$('#show_box').html(html_show);
+				},
+				onClose: function() {
+					$('#show_box').html(html_show);
+				},
+				onCancelBut: function() {
+					$('#show_box').html(html_show);
+				},
+			});
+
+			dt_show = $('#table_show').DataTable( {
+				"ajax": '/get_requisition/?id=' + id,
+			});
+	 	});
+	 	
+	 	//$('#table1 tbody').on('click','tr td:nth-of-type(4n)', function () {
+	 	$('#table1 tbody').on('click','tr td.candidate_row', function () {
+	 		
+	 		var id = $(this).prev().prev().text();
+	 		$('#show_div').dialogModal({
+				onLoad: function() {
+					html_show = $('#show_box').html();
+					$('#show_box').empty()
+				},
+				onOkBut: function() {
+					$('#show_box').html(html_show);
+				},
+				onClose: function() {
+					$('#show_box').html(html_show);
+				},
+				onCancelBut: function() {
+					$('#show_box').html(html_show);
+				},
+			});
+
+			dt_show = $('#table_show').DataTable( {
+				"ajax": '/get_candidate/?id=' + id,
+			});
+	 	});
+	 	
+	 	//$('#table1 tbody').on( 'click', 'tr td:nth-of-type(5n)', function () {
+	 	$('#table1 tbody').on( 'click', 'tr td.recruiter_row', function () {
+	 		var id = $(this).prev().prev().prev().text();
+	 		$('#show_div').dialogModal({
+				onLoad: function() {
+					html_show = $('#show_box').html();
+					$('#show_box').empty()
+				},
+				onOkBut: function() {
+					$('#show_box').html(html_show);
+				},
+				onClose: function() {
+					$('#show_box').html(html_show);
+				},
+				onCancelBut: function() {
+					$('#show_box').html(html_show);
+				},
+			});
+
+			dt_show = $('#table_show').DataTable( {
+				"ajax": '/get_recruiter/?id=' + id,
+			});
+	 	});
+
+    // Array to track the ids of the details displayed rows
+    var detailRows = [];
+ 
+    $('#table1 tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = dt.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    } );
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    dt.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child').trigger( 'click' );
+        } );
+    } );
+
+});
+</script>
+</body>
+</html>

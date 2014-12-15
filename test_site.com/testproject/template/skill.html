@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+{% load bootstrap_toolkit %} {% load url from future %}
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css"
+	href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.min.css">
+<script src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="/static/popup/popModal.min.css">
+<link rel="stylesheet" type="text/css"
+	href="/static/common.css">
+
+
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+
+
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+
+<style type="text/css">
+</style>
+
+</head>
+
+<body>
+
+<style type="text/css" class="init">
+td.details-control {
+	background: url('/static/image/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+
+tr.details td.details-control {
+	background: url('/static/image/details_close.png') no-repeat center center;
+}
+
+
+a{
+border-left: 1px solid #B7D0E4;
+display: inline-block;
+margin-left: -1px;
+padding: 0px 0px 0px 3px;
+}
+
+
+</style>
+
+	<div>
+		{% if name %}
+
+			{% csrf_token %}
+			<div>
+				{% block content%}
+			<p class="form-actions">
+				<h1>Hello {{ name }}</h1>
+			</p>
+			<br/>
+			<br>
+				<table id="table1" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th><strong>ID</strong></th>
+							<th><strong>skill_name</strong></th>
+							<th><strong>skill_desc</strong></th>
+							<th><strong>skill_catagory</strong></th>		
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+						<td>{{ skill.id}}</td>
+						<td>{{ skill.skill_name}}</td>
+						<td>{{ skill.skill_desc}}</td>
+						<td>{{ skill.skill_catagory}}</td>
+						</tr>
+					</tbody>
+				</table>
+				{% endblock %}
+			</div>
+		</form>
+		{% else %}
+		 hehe 
+		 {% endif %}
+
+	</div>
+
+<script src="/static/popup/popModal.min.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready( function () {
+	var dt = $('#table1').DataTable({});
+});	
+
+</script>
+</body>
+</html>

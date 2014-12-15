@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+{% load bootstrap_toolkit %}
+{% load url from future %}
+
+<html lang="en">
+	<head>
+    	<meta charset="utf-8">
+    	<title>Intellipro Group Recruiting System</title>
+    	<meta name="description" content="">
+    		{% bootstrap_stylesheet_tag %}
+    		{% bootstrap_stylesheet_tag "responsive" %}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/candidate.css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<style>
+#filter_button:hover, #add_button:hover, .add-on:hover {
+    cursor: pointer;
+}
+</style>
+    	{% bootstrap_javascript_tag %}
+    	{% block extra_head %}{% endblock %}
+	</head>
+	<body>
+    	<div class="well">
+        	<h1>Intellipro Group Recruiting System</h1>
+        	<p> </p>
+            <form action='/profile/' method='POST' class="form-horizontal">
+
+                    <div class="dialogModal_content">
+                        <!--<div class="control-group required">
+                            <label for="type" class="control-label">Type</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="type" id="type">
+                            </div>
+                        </div>
+                        -->
+                        <div class="control-group required">
+                            <label for="first_name" class="control-label">First Name</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="first_name" id="first_name">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="last_name" class="control-label">Last Name</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="last_name" id="last_name">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="email" class="control-label">Email</label>
+                            <div class="controls">
+                                <input type="email" name="email" id="email">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="phone" class="control-label">Phone Number</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="phone" id="phone"  >
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="address" class="control-label">Address</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="address" id="address">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="city" class="control-label">City</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="city" id="city">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="state" class="control-label">State</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="state" id="state">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="zip" class="control-label">Zip</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="zip" id="zip"  >
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="visa_status" class="control-label">Visa Status</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="visa_status" id="visa_status">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="portfolio_link" class="control-label">Portfolio Link</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="portfolio_link" id="portfolio_link">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="linkedin" class="control-label">Linkedin</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="linkedin" id="linkedin">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="source" class="control-label">Source</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="source" id="source">
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="resume_link" class="control-label">Resume_link</label>
+                            <div class="controls">
+                                <input required="required" type="text" name="resume_link" id="resume_link">
+                            </div>
+                        </div>
+                        <div id="skill_list">
+                            <div class="control-group required">
+                                <label for="skills" class="control-label">Skills</label>
+                                <div class="controls form-inline">
+                                    <select  id="skill_name0"  name="skill_name0">
+                                        {% for a in skills%}
+                                        <option value="{{a}}">{{a}}</option> 
+                                        {% endfor %}        
+                                    </select><br>
+                                    <input required="required" type="text" name="skill_year0" id="skill_year0" style="width:94px;" placeholder="year used"> 
+                                    <input required="required" type="text" name="skill_lvl0" id="skill_lvl0" placeholder="skill level" style="width:94px;"><br>
+                                    <div class="input-append">
+                                        <input required="required" type="text" name="skill_start_date0" id="skill_start_date10" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+                                        <span class="add-on"><i class="icon-calendar"></i></span>
+                                    </div>
+                                    <br>
+                                    <textarea required="required" type="text" name="skill_notes0" id="skill_notes0"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-group required">
+                            <label for="add_skill" class="control-label">Add Skill</label>
+                            <div class="controls">
+                                <button type="button" name="add_skill" id="add_skill"><i class="glyphicon glyphicon-plus">Add</i></button>
+                            </div>
+                        </div>
+                    
+                         <div class="control-group required">
+                            <div class="controls">
+                            <button  id="add_confirm" type="submit" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+                            </div>
+                        </div>
+                </form>
+    	</div>
+
+
+
+<script type="text/javascript">
+
+
+var skill_num = 1;
+function add_skill_func () {
+    skill_num = skill_num + 1;
+    var append_html = '\
+        <div class="control-group required">\
+        <label for="skills" class="control-label">skills</label>\
+        <div class="controls form-inline">\
+        <select  id="skill_name'+skill_num+'" name="skill_name'+skill_num+'" >\
+        {% for a in skills%}\
+        <option value="{{a}}">{{a}}</option> \
+        {% endfor %}\
+        </select><br>\
+        <input required="required" type="text" name="skill_year'+skill_num+'" id="skill_year'+skill_num+'" style="width:94px;" placeholder="year used">\
+        <input required="required" type="text" name="skill_lvl'+skill_num+'" id="skill_lvl'+skill_num+'" placeholder="skill level" style="width:94px;"><br>\
+        <div class ="input-append"> \
+        <input required="required" type="text" name="skill_start_date'+skill_num+'" id="skill_start_date1'+skill_num +'" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">\
+        <span class="add-on"><i class="icon-calendar"></i>\
+        </span>\
+        </div> \
+        <br>\
+        <textarea required="required" type="text" name="skill_notes'+skill_num+'" id="skill_notes'+skill_num+'"></textarea>\
+        </div>\
+        </div>';
+    $('#skill_list').append(append_html);
+}
+$('#add_skill').bind('click', add_skill_func);
+
+</script>
+
+
+
+
+
+	</body>
+</html>

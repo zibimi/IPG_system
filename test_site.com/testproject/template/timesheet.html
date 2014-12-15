@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+{% load bootstrap_toolkit %} {% load url from future %}
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/popup/popModal.min.css">
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+<link href="/static/multiselect/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/submittal.css">
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+</head>
+<body>
+{% if name %}
+	{% csrf_token %}
+
+
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <span class="brand">Hello {{ name }}</span>
+	        <ul class="nav">
+	            <li><a href="/requisition/">Requisition</a></li>
+	            <li><a href="/candidate/">Party</a></li>
+	            <li class="active"><a href="/submittal/">Submittal</a></li>
+	            <li><a href="/timesheet/">Timesheet</a></li>
+	            <!-- <li><a id="filter_button" data-dialogmodal-bind="#filter">Filter</a></li>
+	            <li><a id="add_button" data-dialogmodal-bind="#addbox_div">Add</a></li> -->
+	            <li class="" rtype="submit" role="button"><a href="/logout/">Log Out</a></li>
+	        </ul>
+	    </div>
+	</div>
+	<div>
+	{% block content%}
+		<!-- data table start -->
+			<table id="table1" class="display" cellspacing="0" width="80%">
+				<thead>
+					<tr>						
+						<!-- <th style="width:30px;"></th> -->
+						<th><strong>ID</strong></th>
+						<th><strong>consultant</strong></th>
+						<th><strong>status</strong></th>
+						<th><strong>site</strong></th>
+						<th><strong>week_end</strong></th>
+						<th><strong>st_hrs</strong></th>
+						<th><strong>ot_hrs</strong></th>
+						<th><strong>dt_hrs</strong></th>
+						<th><strong>nb_hrs</strong></th>
+						<th><strong>other_hrs</strong></th>
+					</tr>
+				</thead>
+			</table>
+			{% endblock %}
+	
+		<!-- data table start -->
+	</div>	
+	{% else %}
+	hehe 
+	{% endif %}
+
+
+
+<script src="/static/popup/popModal.min.js"></script>
+<script type="text/javascript">
+var dataSet = {{data|safe}};
+
+function format ( d ) {
+    return '<strong>Notes</strong>: $' + d.notes + '<br>';
+}
+
+
+// var s_account = $('#s_account').val();
+
+// $.fn.dataTable.ext.search.push(
+//     function( settings, data, dataIndex ) {
+
+
+//         var d_account = data[2];
+
+//         if ((s_account == "all" || s_account == d_account))
+//         {
+//             return true;
+//         }
+//         return false;
+//     }
+// );
+
+$(document).ready( function () {
+	var dt = $('#table1').DataTable( {
+		"responsive": true,
+		"paging": true,
+		"ordering" : true,
+		"data": dataSet["data"],
+		"columns": [
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ""
+            },
+            // {
+            //     "class":          "submit-control",
+            //     "orderable":      false,
+            //     "data":           null,
+            //     "defaultContent": "submit"
+            // },
+            { "data": "id" },
+            { "data": "consultant" },
+            { "data": "status" },
+            { "data": "account" },
+            { "data": "site" },
+            { "data": "week_end" },
+            { "data": "st_hrs"},
+            { "data": "ot_hrs" },
+            { "data": "dt_hrs" },
+            { "data": "nb_hrs" },
+            { "data": "other_hrs" }
+        ],
+         "order": [[1, 'asc']]
+	} );
+
+	// $('.submit-control').removeClass('sorting_asc');
+	// $('.submit-control').addClass('sort_disabled');
+	// $('.submit-control').click(function() {
+	// 	console.log("what!");
+	// })
+
+	// Event listener to the two range filtering inputs to redraw on input
+
+
+	// var html_filter='';
+	// $('#filter_button').click(function(){
+	// 	$('#filter').dialogModal({
+	// 		onLoad: function() {
+	// 			html_filter = $('#box').html();
+	// 			$('#box').empty()
+	// 		},
+	// 		onOkBut: function() {
+	// 			s_recruiter = $('#s_recruiter').val();
+	// 			dt.draw();
+	// 			$('#box').html(html_filter);
+	// 		},
+	// 		onClose: function() {
+	// 			$('#box').html(html_filter);
+	// 		},
+	// 		onCancelBut: function() {
+	// 			$('#box').html(html_filter);
+	// 		}
+	// 	});
+	// });
+
+	// var html_add = '';
+
+	// $('#add_button').click(function(){
+	// 	$('#addbox_div').dialogModal({
+	// 	onLoad: function() {
+	// 		html_add = $('#addbox').html();
+	// 		$('#addbox').empty()
+	// 	},
+	// 	onOkBut: function() {
+	// 	$('#addbox').html(html_add);
+	// 	return false;
+	// 	},
+	// 	onClose: function() {
+	// 		$('#addbox').html(html_add);
+	// 	},
+	// 	onCancelBut: function() {
+	// 		$('#addbox').html(html_add);
+	// 	},
+	// 	});
+
+	// 	$('.party_group').bind('click', function(){
+	// 		$(".dialogModal").css("display", "none");  
+	// 		swal({   
+	// 		        title: "Are you sure?",   
+	// 		        text: "You will be redirect to other pages!",   
+	// 		        type: "warning",   
+	// 		        showCancelButton: true,   
+	// 		        confirmButtonColor: "#DD6B55",   
+	// 		        confirmButtonText: "Yes, Redirect!",   
+	// 		        cancelButtonText: "No, cancel plx!",   
+	// 		        closeOnConfirm: false,   
+	// 		        closeOnCancel: false 
+	// 		    }, 
+
+	// 		    function(isConfirm){   
+	// 		    if (isConfirm) {     
+	// 		        swal("Redirecting!", "You will be redirected soon.", "success");   
+
+	// 		        self.location = '/candidate/';
+
+	// 		    } else 
+	// 		    {     
+ 
+	// 		        $(".dialogModal").css("display", "block");  
+	// 		    } 
+	// 		});
+	// 	});
+		
+
+	 //  $('#hourly_rate , #current_year_rate, #expected_year_rate').keyup( function() {
+	       
+	 //       var a = $('#hourly_rate').val();
+	 //       var b = $('#current_year_rate').val();
+	 //       var c = $('#expected_year_rate').val();
+	 //       if (a != '' && b == '' ) {
+	 //       	 	$('#current_year_rate').attr('disabled', 'disabled');
+	 //       	 	$('#expected_year_rate').attr('disabled', 'disabled');
+	 //       	 	$('#current_year_rate').removeAttr('required');
+	 //       	 	$('#expected_year_rate').removeAttr('required');
+	 //       	 	$('#current_year_rate').attr('value','');
+	 //       	 	$('#expected_year_rate').attr('value','');
+
+	 //       } else if (a == '' &&  b == ''){
+	 //       		$('#current_year_rate').removeAttr('disabled');
+	 //       	 	$('#expected_year_rate').removeAttr('disabled');
+	 //       	 	$('#current_year_rate').attr('required', 'required');
+	 //       	 	$('#expected_year_rate').attr('required', 'required');
+	 //       	 	$('#hourly_rate').removeAttr('disabled');
+	 //       	 	$('#hourly_rate').attr('required', 'required');
+
+	 //       } else if (b != '' && a == '') {
+	 //       		$('#hourly_rate').attr('disabled', 'disabled');
+	 //       	 	$('#expected_year_rate').removeAttr('disabled');
+	 //       	 	$('#hourly_rate').removeAttr('required');
+	 //       	 	$('#expected_year_rate').attr('required','required');
+	 //       	 	$('#hourly_rate').attr('value','');
+	 //       } 
+
+	 //    } );
+
+
+		// $('.requisition_group').bind('click', function(){
+		// 	$(".dialogModal").css("display", "none");  
+		// 	swal({   
+		// 	        title: "Are you sure?",   
+		// 	        text: "You will be redirect to other pages!",   
+		// 	        type: "warning",   
+		// 	        showCancelButton: true,   
+		// 	        confirmButtonColor: "#DD6B55",   
+		// 	        confirmButtonText: "Yes, Redirect!",   
+		// 	        cancelButtonText: "No, cancel plx!",   
+		// 	        closeOnConfirm: false,   
+		// 	        closeOnCancel: false 
+		// 	    }, 
+
+		// 	    function(isConfirm){   
+		// 	    if (isConfirm) {     
+		// 	        swal("Redirecting!", "You will be redirected soon.", "success");   
+
+		// 	        self.location = '/requisition/';
+
+		// 	    } else 
+		// 	    {     
+			       
+		// 	        $(".dialogModal").css("display", "block");  
+		// 	    } 
+		// 	    });
+		// 	});
+		// });
+
+		var dt_show;
+		var html_show = '';
+	 	$('#table1 tbody').on( 'click', 'tr td:nth-of-type(3n)', function () {
+	 		var id = $(this).prev().text();
+	 		$('#show_div').dialogModal({
+				onLoad: function() {
+					html_show = $('#show_box').html();
+					$('#show_box').empty()
+				},
+				onOkBut: function() {
+					$('#show_box').html(html_show);
+				},
+				onClose: function() {
+					$('#show_box').html(html_show);
+				},
+				onCancelBut: function() {
+					$('#show_box').html(html_show);
+				},
+			});
+
+			dt_show = $('#table_show').DataTable( {
+				"ajax": '/get_requisition/?id=' + id,
+			});
+	 	});
+
+	 	$('#table1 tbody').on('click','tr td:nth-of-type(4n)', function () {
+	 		
+	 		var id = $(this).prev().prev().text();
+	 		$('#show_div').dialogModal({
+				onLoad: function() {
+					html_show = $('#show_box').html();
+					$('#show_box').empty()
+				},
+				onOkBut: function() {
+					$('#show_box').html(html_show);
+				},
+				onClose: function() {
+					$('#show_box').html(html_show);
+				},
+				onCancelBut: function() {
+					$('#show_box').html(html_show);
+				},
+			});
+
+			dt_show = $('#table_show').DataTable( {
+				"ajax": '/get_candidate/?id=' + id,
+			});
+	 	});
+
+	 	$('#table1 tbody').on( 'click', 'tr td:nth-of-type(5n)', function () {
+	 		var id = $(this).prev().prev().prev().text();
+	 		$('#show_div').dialogModal({
+				onLoad: function() {
+					html_show = $('#show_box').html();
+					$('#show_box').empty()
+				},
+				onOkBut: function() {
+					$('#show_box').html(html_show);
+				},
+				onClose: function() {
+					$('#show_box').html(html_show);
+				},
+				onCancelBut: function() {
+					$('#show_box').html(html_show);
+				},
+			});
+
+			dt_show = $('#table_show').DataTable( {
+				"ajax": '/get_recruiter/?id=' + id,
+			});
+	 	});
+
+    // Array to track the ids of the details displayed rows
+    var detailRows = [];
+ 
+    $('#table1 tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = dt.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    } );
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    dt.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child').trigger( 'click' );
+        } );
+    } );
+
+});
+</script>
+</body>
+</html>

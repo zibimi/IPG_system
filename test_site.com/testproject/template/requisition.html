@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %} {% load url from future %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/popup/popModal.min.css">
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+
+<link href="/static/multiselect/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/requisition.css">
+<style>
+#filter_button:hover, #add_button:hover {
+	cursor: pointer;
+}
+</style>
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+</head>
+<body>
+{% if name %}
+	{% csrf_token %}
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <span class="brand">Hello {{ name }}</span>
+	        <ul class="nav">
+	            <li class="active"><a href="/requisition/">Requisition</a></li>
+	            <li><a href="/candidate/">Party</a></li>
+	            <li><a href="/submittal/">Submittal</a></li>
+	            <!--<li><a href="/timesheet/">Timesheet</a></li>-->	            
+	            <li role="button"><a href="/logout/">Log Out</a></li>
+	        </ul>
+	    </div>
+	</div>
+	<div>
+		{% block content%}
+		<div id="addbox">
+			<div id="addbox_div"  class="dialog_content"  style="display:none">
+				<form action='/add_requisition/' method='POST' class="form-horizontal">
+					<div class="dialogModal_header">Add Requisition</div>
+					<div class="dialogModal_content">
+
+					<!--Req Date-->
+					<div class="control-group required">
+						<label for="req_date" class="control-label">Req Date</label>
+						<div class="controls">
+							<div class="input-append">
+	    						<input required="required" type="text" name="req_date" id="req_date" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+	    						<span class="add-on"><i class="icon-calendar"></i></span>
+							</div>
+						</div>
+					</div>
+
+					<!--RReq Status-->
+					<div class="control-group required">
+						<label for="req_status" class="control-label">Req Status</label>
+						<div class="controls">
+							<select id="req_status"  name="req_status" value="">
+								{% for a in reqStatus %}
+								<option value="{{a.id}}">{{a}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<!--Client-->
+					<div class="control-group required">
+						<label for="client" class="control-label">Client</label>
+						<div class="controls">
+							<select id="client"  name="client" >
+								{% for a in client %}
+								<option value="{{a.id}}">{{a}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<!--Recruiter-->
+						<div class="control-group required">
+							<label for="recruiter" class="control-label">Recruiter</label>
+							<div class="controls">
+								<select  name="recruiter" id="recruiter" >
+										{% for a in party%}
+										<option value="{{a.id}}">{{a}}</option> 
+										{% endfor %}		
+								</select>
+							</div>
+						</div>
+					
+					<!--Job ID-->
+					<div class="control-group required">
+						<label for="ipg_id" class="control-label">Job ID</label>
+						<div class="controls">
+							<input required="required" type="text" name="job_id"  size="45"  id="job_id">
+						</div>
+					</div>
+						
+					<!--Job Title-->
+					<div class="control-group required">
+						<label for="job_title" class="control-label">Job Title</label>
+						<div class="controls">
+							<input required="required" type="text" name="job_title" size="45"  id="job_title">
+						</div>
+					</div>
+					
+					<!--Emp Type-->	
+						<div class="control-group required">
+							<label for="emp_type" class="control-label">Emp Type</label>
+							<div class="controls">
+								<select id="emp_type"  name="emp_type" >
+									{% for a in empType %}
+								<option value="{{a.id}}">{{a}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<!--Hours-->	
+						<div class="control-group required">
+							<label for="hours" class="control-label">Hours</label>
+							<div class="controls">
+								<select id="hours"  name="hours" >
+									{% for a in hours %}
+								<option value="{{a.id}}">{{a}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<!--Location-->
+					<div class="control-group required">
+						<label for="loc" class="control-label">Location</label>
+						<div class="controls">
+							<input required="required" size="45"   type="text" name="loc" id="loc">
+						</div>
+					</div>
+
+					<!--Duration-->
+					<div class="control-group required">
+							<label for="duration" class="control-label">Duration</label>
+							<div class="controls">
+								<input required="required" size="45"  type="text" name="duration" id="duration">
+							</div>
+						</div>
+
+					<!--Rate-->
+					<div class="control-group required">
+						<label for="rate" class="control-label">Rate</label>
+						<div class="controls">
+							<input required="required" size="45"  type="text" name="rate" id="rate">
+						</div>
+					</div>
+
+					<!--Openings-->
+					<div class="control-group required">
+						<label for="openings" class="control-label">Openings</label>
+						<div class="controls">
+							<input required="required" type="text" name="openings" id="openings"  >
+						</div>
+					</div>
+
+					<!--Job Description-->
+					<div class="control-group required"> 
+						<label for="job_description" class="control-label">Job Description</label>
+						<div class="controls">
+							<textarea required="required" title="job_description" rows="10" name="job_description" size="20000" id="job_description" cols="40"></textarea>
+						</div>
+					</div>
+
+					<!--Job Description-->
+					<div class="control-group required">
+						<label for="req_contact" class="control-label">Req Contact</label>
+						<div class="controls">
+							<input required="required" type="text" size="45"  name="req_contact" id="req_contact">
+						</div>
+					</div>
+
+					<!--Req Contact Notes-->
+					<div class="control-group required"> 
+						<label for="req_contact_notes" class="control-label">Req Contact Notes</label>
+						<div class="controls">
+							<textarea required="required" title="req_contact_notes" rows="10" name="req_contact_notes" size="20000" id="req_contact_notes" cols="40"></textarea>
+						</div>
+					</div>
+
+					<!--City-->
+					<div class="control-group required">
+						<label for="city" class="control-label">City</label>
+						<div class="controls">
+							<input required="required" size="45"  type="text" name="city" id="city">
+						</div>
+					</div>
+
+					<!--States-->
+					<div class="control-group required">
+						<label for="state" class="control-label">State</label>
+						<div class="controls">
+							<input required="required" size="45"  type="text" name="state" id="state">
+						</div>
+					</div>
+
+					<!--Start Date-->
+					<div class="control-group required">
+						<label for="start_date" class="control-label">Start Date</label>
+						<div class="controls">
+							<div class="input-append">
+	    						<input required="required" type="text" name="start_date" id="start_date" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+	    						<span class="add-on"><i class="icon-calendar"></i></span>
+							</div>
+						</div>
+					</div>
+
+					<!--End Date-->
+					<div class="control-group required">
+						<label for="end_date" class="control-label">End Date</label>
+						<div class="controls">
+							<div class="input-append">
+	    						<input required="required" type="text" name="end_date" id="end_date" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+	   							<span class="add-on"><i class="icon-calendar"></i></span>
+							</div>
+						</div>
+					</div>
+					<!--Category-->	
+						<div class="control-group required">
+							<label for="category" class="control-label">Category</label>
+							<div class="controls">
+								<select id="category"  name="category" >
+									{% for a in category %}
+								<option value="{{a.id}}">{{a}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<!--Priority-->	
+					<div class="control-group required">
+						<label for="priority" class="control-label">Priority</label>
+						<div class="controls">
+							<select id="priority"  name="priority" >
+								{% for a in priority %}
+								<option value="{{a.id}}">{{a}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<!--Keywords-->
+					<div class="control-group required"> 
+						<label for="keywords_id" class="control-label">Keywords</label>
+						<div class="controls">
+							<select id="keywords_id"  multiple="multiple" >
+							{% for a in keywords%}
+								<option value="{{a}}">{{a}}</option> 
+							{% endfor %}		
+							</select>
+						</div>
+					</div>
+						<input type="text" id="keywords"  name="keywords" style="display:none" ></input>
+					</div>
+					<div class="dialogModal_footer">
+						<button  id="add_confirm" type="subumit" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+						<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div> <!-- id="addbox" end -->
+
+		<div id="box">
+			<div id="filter"  class="dialog_content" style="display:none">
+				<div class="dialogModal_header">Requisition Filter</div>
+				<div class="dialogModal_content">
+					<table>
+						<tbody>
+							<tr> 	
+								<td><lable>Client:<br/> <select id="s_client">
+									<option value="all" selected="selected">All</option> 
+									{% for a in client%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>Job Title: <br/><select id="s_job_title">
+										<option value="all" selected="selected">All</option> 
+										{% for a in fdict.job_title %}
+										<option value="{{a}}">{{a}}</option>
+										{% endfor %}
+								</select></lable></td>
+								<td><lable>Recruiter: <br/><select id="s_recruiter">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.recruiter%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								
+							</tr>
+							<tr>
+								<td><lable>Priority: <br/><select id="s_priority">
+									<option value="all" selected="selected">All</option> 
+									{% for a in priority%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select></lable></td>
+								<td><lable>Status: <br/><select id="s_req_status">
+									<option value="all" selected="selected">All</option> 
+									{% for a in reqStatus%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>Location: <br/><select id="s_loc">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.loc%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select></lable></td>
+								
+							</tr>
+							<tr>
+								<td><lable>City:<br/> <select id="s_city">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.city%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>State: <br/><select id="s_state">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.state%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>Req Contac: <br/><select id="s_req_contact">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.req_contact%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select></lable></td>
+								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="dialogModal_footer">
+					<button  id="filter_confirm" type="button" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+					<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">Cancel</button>
+				</div>
+			</div>
+		</div> <!-- id="box" -->
+ 		
+		<div id="editButtons" class="">
+			<button id="filter_button" class="btn btn-default" type="button" data-dialogmodal-bind="#filter">Filter</button>
+			<button id="add_button" class="btn btn-default" type="button" data-dialogmodal-bind="#addbox_div">Add</button>
+		</div>
+ 		
+		<table id="table1" class="display" cellspacing="0" width="90%">
+			<thead>
+				<tr>
+					<th></th>
+					<th><strong>ID</strong></th>
+					<th><strong>Req_Date</strong></th>
+					<th><strong>Req_Status</strong></th>
+					<th><strong>Client</strong></th>
+					<th><strong>Recruiter</strong></th>
+					<th><strong>Job_ID</strong></th>
+					<th><strong>Job_Title</strong></th>
+					<th><strong>Location</strong></th>
+					<th><strong>Openings</strong></th>
+					<th><strong>Keywords</strong></th>
+					<th><strong>Req_Contact</strong></th>
+					<th><strong>City</strong></th>
+					<th><strong>State</strong></th>
+					<th><strong>Start_Date</strong></th>
+					<th><strong>End_Date</strong></th>
+					<th><strong>Req_Approved</strong></th>
+					<th><strong>Priority</strong></th>
+					<th><strong>Days_Left<strong><th>
+				</tr>
+			</thead>
+		</table>
+		{% endblock %}
+	 
+	</div>
+	{% else %}
+	hehe 
+	{% endif %}
+	<div id="show_box">
+		<div id="show_div"  class="dialog_content" style="display:none">
+			<div class="dialogModal_header">Details</div>
+			<div class="dialogModal_content">
+				<table id="table_show" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th><strong>Id</strong></th>
+							<th><strong>skill_name</strong></th>
+							<th><strong>skill_desc</strong></th>
+							<th><strong>skill_catagory</strong></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="dialogModal_footer"></div>
+		</div>
+	</div>
+
+<script src="/static/popup/popModal.min.js"></script>
+<script src="/static/multiselect/js/jquery.multi-select.js" type="text/javascript"></script>
+<script type="text/javascript">
+var dataSet = {{data|safe}};
+
+function format ( d ) {
+    return '<strong>Emp Type</strong>: ' + d.emp_type+'<br>'+
+    	'<strong>Hours</strong>: ' + d.hours + '<br>' +
+    	'<strong>Category</strong>: ' + d.category + '<br>' +
+    	'<strong>Rate</strong>: $' + d.rate+'<br>'+
+    	'<strong>Duration</strong>: '+d.duration+' <br/>' +
+        '<strong>Job_desc</strong>: ' + d.job_description+'<br>'+
+        '<strong>Hire_mgr_notes</strong>: ' + d.req_contact_notes+'<br>';
+
+}
+
+var s_job_title = $('#s_job_title').val();
+var s_recruiter = $('#s_recruiter').val();
+var s_priority = $('#s_priority').val();
+var s_req_status = $('#s_req_status').val();
+var s_loc = $('#s_loc').val();
+var s_city = $('#s_city').val();
+var s_state = $('#s_state').val();
+var s_req_contact = $('#s_req_contact').val();
+var s_client = $('#s_client').val();
+
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var i = 2;
+
+        var d_req_date = data[i++];
+        var d_req_status = data[i++];
+        var d_client = data[i++];
+		var d_recruiter = data[i++];
+        var d_job_id = data[i++];
+        var d_job_title = data[i++];
+        var d_loc = data[i++];
+        var d_openings = data[i++];
+        i++;
+        var d_req_contact = data[i++];
+        var d_city = data[i++];
+        var d_state = data[i++];
+        var d_start_date = data[i++];
+        var d_end_date = data[i++];
+        var d_req_approved = data[i++];
+        var d_priority = data[i++];
+
+        if ((s_job_title == "all" || s_job_title == d_job_title) && 
+            (s_recruiter == "all" || s_recruiter == d_recruiter) && 
+            (s_priority == "all" || s_priority == d_priority) && 
+            (s_req_status == "all" || s_req_status == d_req_status) && 
+            (s_loc == "all" || s_loc == d_loc) && 
+            (s_city == "all" || s_city == d_city) && 
+            (s_state == "all" || s_state == d_state) && 
+            (s_req_contact == "all" || s_req_contact == d_req_contact) &&
+            (s_client == "all" || s_client == d_client))
+        {	
+            return true;
+        }
+        return false;
+    }
+);
+
+var keywords_values = [];
+
+$(document).ready( function () {
+	var dt = $('#table1').DataTable( {
+		"responsive": true,
+		"paging": true,
+		"ordering" : true,
+		"data": dataSet["data"],
+		"columns": [
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ""
+            },
+			{ 	
+				"class": "id_row",
+				"data": "id" 
+			},
+            { "data": "req_date"},
+            { "data": "req_status" },
+            { "data": "client" },
+            { "data": "recruiter" },
+            { "data": "job_id" },
+            { "data": "job_title" },
+            { "data": "loc" },
+            { "data": "openings" },
+            { "data": "keywords" },
+            { "data": "req_contact" },
+            { "data": "city" },
+            { "data": "state" },
+            { "data": "start_date" },
+            { "data": "end_date" },
+            { "data": "req_approved" },
+            { "data": "priority" },
+            { "data": "days_left" },
+            {
+                "class":          "job_desc_row",
+                "orderable":      false,
+                "data":           "job_description",
+                "defaultContent": "jd"
+            }
+
+        ],
+         "order": [[1, 'asc']]
+	} );
+
+	// Event listener to the two range filtering inputs to redraw on input
+	var html_filter='';
+	$('#filter_button').click(function(){
+		$('#filter').dialogModal({
+			onLoad: function() {
+				html_filter = $('#box').html();
+				$('#box').empty()
+			},
+			onOkBut: function() {
+			s_job_title = $('#s_job_title').val();
+			s_recruiter = $('#s_recruiter').val();
+			s_priority = $('#s_priority').val();
+			s_req_status = $('#s_req_status').val();
+			s_loc = $('#s_loc').val();
+			s_city = $('#s_city').val();
+			s_state = $('#s_state').val();
+			s_req_contact = $('#s_req_contact').val();
+			s_client = $('#s_client').val();
+			dt.draw();
+			$('#box').html(html_filter);
+		},
+		onClose: function() {
+			$('#box').html(html_filter);
+		},
+		onCancelBut: function() {
+			$('#box').html(html_filter);
+		},
+		});
+	});
+	var html_add = '';
+	$('#add_button').click(function(){
+		$('#addbox_div').dialogModal({
+		onLoad: function() {
+				html_add = $('#addbox').html();
+				$('#addbox').empty();
+
+		},
+		onOkBut: function() {
+
+
+			$('#addbox').html(html_add);
+
+			 keywords_values = [];
+			return false;
+		},
+		onClose: function() {
+			$('#addbox').html(html_add);
+		},
+		onCancelBut: function() {
+			$('#addbox').html(html_add);
+		},
+		});
+
+		$('#keywords_id').multiSelect({
+		  afterSelect: function(values){
+	
+		    keywords_values.push(values[0]);
+		    $('#keywords').attr('value', keywords_values.join(','));
+
+		  },
+		  afterDeselect: function(values){
+		    var i = 0;
+
+		    while (i < keywords_values.length) {
+		    	if (keywords_values[i] == values[0]) {
+		    		keywords_values.splice(i, 1);
+		    		break;
+		    	}
+		    	i = i+ 1;
+		    }
+	    	 $('#keywords').attr('value', keywords_values.join(','));
+		  }
+
+		});
+	});
+
+	var dt_show;
+	var html_show = '';
+ 	$('#table1 tbody').on( 'click', 'tr td:nth-of-type(11)', function () {
+ 		var id = $(this).prev().prev().prev().prev().prev().prev().prev().prev().prev().text();
+ 		$('#show_div').dialogModal({
+			onLoad: function() {
+				html_show = $('#show_box').html();
+				$('#show_box').empty()
+			},
+			onOkBut: function() {
+				$('#show_box').html(html_show);
+			},
+			onClose: function() {
+				$('#show_box').html(html_show);
+			},
+			onCancelBut: function() {
+				$('#show_box').html(html_show);
+			},
+		});
+
+		dt_show = $('#table_show').DataTable( {
+			"ajax": '/get_skill/?id=' + id,
+		});
+ 	});
+
+    // Array to track the ids of the details displayed rows
+    var detailRows = [];
+ 
+    $('#table1 tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = dt.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    } );
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    dt.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child').trigger( 'click' );
+        } );
+    } );
+
+});	
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+body {
+	margin: auto;
+	background-color: #b2b0b0;
+}
+
+/*a{
+	border-left: 1px solid #B7D0E4;
+	display: inline-block;
+	margin-left: -1px;
+	padding: 0px 0px 0px 3px;
+}*/
+
+#box {
+	width: 600px;
+}
+
+#filterTable > tbody > tr > td, label{
+	margin-bottom: 0;
+	margin-left: 5px;
+}
+
+#filterTable > tbody > tr > td > label, select{
+	width: 180px;
+}
+
+/* table start */
+td.details-control {
+    background: url('/static/image/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.details td.details-control {
+    background: url('/static/image/details_close.png') no-repeat center center;
+}
+/* table end */
+
+#filter_button:hover, #add_button:hover {
+	cursor: pointer;
+}
+
+.job_desc_row {
+	display: none;
+}
+
+.id_row {
+	display: none;
+}

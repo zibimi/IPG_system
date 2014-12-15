@@ -1,0 +1,48 @@
+body {
+	margin: auto;
+	background-color: #b2b0b0;
+}
+
+td.details-control {
+	background: url('/static/image/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+
+tr.details td.details-control {
+	background: url('/static/image/details_close.png') no-repeat center center;
+}
+
+/*a{
+	border-left: 1px solid #B7D0E4;
+	display: inline-block;
+	margin-left: 20px;
+	padding: 0px 0px 0px 3px;
+}*/
+
+.odd > td, .even > td{
+	text-align: center;
+}
+
+#filter_button:hover, #add_button:hover {
+	cursor: pointer;
+}
+
+#table1 {
+	
+}
+
+#table1_length{
+	margin-left: 20px;
+}
+
+#editButtons {
+	/*margin-bottom: 15px;*/
+}
+
+.submit-control {
+	
+}
+
+.id_row {
+	display: none;
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %} {% load url from future %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/popup/popModal.min.css">
+
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/candidate.css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<style>
+#filter_button:hover, #update_button:hover, .add-on:hover {
+	cursor: pointer;
+}
+</style>
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+</head>
+<body>
+{% if name %}
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <span class="brand">Hello {{ name }}</span>
+	        <ul class="nav">
+	            <li><a href="/joblist/">Job</a></li>
+	            <li><a href="/profile/">Profile</a></li>
+	            <!--<li><a href="/timesheet/">Timesheet</a></li>-->	            
+	            <li role="button"><a href="/logout/">Log Out</a></li>
+	        </ul>
+	    </div>
+	</div>
+	<style>
+	.title{
+		width: 100%;
+		margin-left: -35%;
+		
+	}
+	</style>
+	<div id="profile_field" style="width: 80%; margin-left:10%; display:inline-block;">
+		<div id="name_field" style="width: 40%; margin-left: 10%;">
+			<ul>
+				<li class="title">About</li>
+				<li>first_name : {{userinfo.first_name}}</li>
+				<li>last_name : {{userinfo.last_name}}</li>
+				<li class="title">Contact</li>
+				<li>email : {{userinfo.email}}</li>
+				<li>phone : {{userinfo.phone}}</li>
+				<li>address : {{userinfo.address}}</li>
+				<li>city : {{userinfo.city}}</li>
+				<li>state : {{userinfo.state}}</li>
+				<li>zip  {{userinfo.zip}}</li>
+				<li class="title">Work</li>
+				<li>visa_status : {{userinfo.visa_status}}</li>
+				<li>portfolio_link : {{userinfo.portfolio_link}}</li>
+				<li>linkedin : {{userinfo.linkedin}}</li>
+				<li>source : {{userinfo.source}}</li>
+				<li>resume_link : {{userinfo.resume_link}}</li>
+			</ul>
+		</div>
+	</div>
+	<button id="update_button" class="btn btn-default" type="button" data-dialogmodal-bind="#updatebox_div">Update</button>
+
+	<div id="updatebox">
+		<div id="updatebox_div"  class="dialog_content"  style="display:none">
+			<div class="dialogModal_header">Update Profile</div>
+				<form action="/profile/" method="POST" class="form-horizontal" >
+					<div class="dialogModal_content">
+						{% csrf_token %}
+						{{ form|as_bootstrap:"horizontal"}}
+					</div>
+					<div class="dialogModal_footer">
+						<button  id="add_confirm" type="subumit" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+						<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+<script src="/static/popup/popModal.min.js"></script>
+
+<script type="text/javascript">
+	var html_update = '';
+	$('#update_button').click(function(){
+		$('#updatebox_div').dialogModal({
+			onLoad: function() {
+					html_update = $('#updatebox').html();
+					$('#updatebox').empty();
+			},
+			onOkBut: function() {
+
+				$('#updatebox').html(html_update);
+			},
+			onClose: function() {
+				$('#updatebox').html(html_update);
+			},
+			onCancelBut: function() {
+				$('#updatebox').html(html_update);
+			},
+		});
+	});
+</script>
+{% endif %}
+</body>

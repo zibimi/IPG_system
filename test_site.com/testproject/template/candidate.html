@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %} {% load url from future %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/candidate.css">
+<link rel="stylesheet" type="text/css" href="/static/popup/popModal.min.css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<style>
+#filter_button:hover, #add_button:hover, .add-on:hover {
+	cursor: pointer;
+}
+</style>
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+</head>
+<body>
+{% if name %}
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <span class="brand">Hello {{ name }}</span>
+	        <ul class="nav">
+	            <li><a href="/requisition/">Requisition</a></li>
+	            <li class="active"><a href="/candidate/">Party</a></li>
+	            <li><a href="/submittal/">Submittal</a></li>
+	            <!--<li><a href="/timesheet/">Timesheet</a></li>-->	            
+	            <li class="" rtype="submit" role="button"><a href="/logout/">Log Out</a></li>
+	        </ul>
+	    </div>
+	</div>
+	<div>
+	{% block content%}
+		<div id="submitbox">
+			<div id="submitbox_div"  class="dialog_content" style="display:none">
+				<form action='/add_submittal/' method='POST' class="form-horizontal">
+					<div class="dialogModal_header">Submit Candidate</div>
+					<div class="dialogModal_content">
+						<div class="control-group required">
+							<label for="candidate" class="control-label">Candidate</label>
+							<div class="controls">
+								<select name="candidate" id="candidate_field" >
+										{% for a in party%}
+										<option value="{{a.id}}">{{a}}</option> 
+										{% endfor %}
+										<option value=""></option>
+								</select>
+								<!-- <span class="add-on"><i class="icon-plus party_group"></i></span> -->
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="recruiter" class="control-label">Recruiter</label>
+							<div class="controls">
+								<select  name="recruiter" id="recruiter" >
+										{% for a in party%}
+										<option value="{{a.id}}">{{a}}</option> 
+										{% endfor %}
+										<option value=""></option>
+								</select>
+								<!-- <span class="add-on"><i class="icon-plus party_group" ></i></span> -->
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="job_id" class="control-label">Job ID</label>
+							<div class="controls">
+								<select  name="job_id" id="job_id" >
+										{% for a in requisition %}
+										<option value="{{a.id}}">{{a.job_id}}</option> 
+										{% endfor %}		
+								</select>
+								<span class="add-on"><i class="icon-plus requisition_group" ></i></span>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="hourly_rate" class="control-label">Hourly_rate</label>
+							<div class="controls">
+								<input required="required" type="text"  name="hourly_rate" id="hourly_rate">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="current_year_rate" class="control-label">current_year_rate</label>
+							<div class="controls">
+								<input required="required" type="text"  name="current_year_rate" id="current_year_rate">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="expected_year_rate" class="control-label">expected_year_rate</label>
+							<div class="controls">
+								<input required="required" type="text"  name="expected_year_rate" id="expected_year_rate">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="interview_available" class="control-label">interview_available</label>
+							<div class="controls">
+								<input required="required" type="text"  name="interview_available" id="interview_available">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="start_available" class="control-label">start_available</label>
+							<div class="controls">
+								<input required="required" type="text"  name="start_available" id="start_available">
+							</div>
+						</div>
+						<div class="control-group required"> 
+							<label for="interview_feedback" class="control-label">interview_feedback</label>
+							<div class="controls">
+								<textarea required="required" title="interview_feedback" rows="10" name="interview_feedback" maxlength="1000" id="interview_feedback" cols="40"></textarea>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="status" class="control-label">status</label>
+							<div class="controls">
+								<input required="required" type="text"  name="status" id="status">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="interview_date" class="control-label">interview_date</label>
+							<div class="controls">
+								<div class="input-append">
+							    	<input required="required" type="text"  name="interview_date" id="interview_date" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+							    <span class="add-on"><i class="icon-calendar"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="dialogModal_footer">
+						<button  id="add_confirm" type="submit" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+						<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="addbox">
+			<div id="addbox_div"  class="dialog_content" style="display:none">
+				<form action='/add_party/' method='POST' class="form-horizontal">
+					<div class="dialogModal_header">Add Candidate</div>
+					<div class="dialogModal_content">
+						<div class="control-group required">
+							<label for="type" class="control-label">Type</label>
+							<div class="controls">
+								<input required="required" type="text" name="type" id="type">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="first_name" class="control-label">First Name</label>
+							<div class="controls">
+								<input required="required" type="text" name="first_name" id="first_name">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="last_name" class="control-label">Last Name</label>
+							<div class="controls">
+								<input required="required" type="text" name="last_name" id="last_name">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="email" class="control-label">Email</label>
+							<div class="controls">
+								<input type="email" name="email" id="email">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="phone" class="control-label">Phone Number</label>
+							<div class="controls">
+								<input required="required" type="text" name="phone" id="phone"  >
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="address" class="control-label">Address</label>
+							<div class="controls">
+								<input required="required" type="text" name="address" id="address">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="city" class="control-label">City</label>
+							<div class="controls">
+								<input required="required" type="text" name="city" id="city">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="state" class="control-label">State</label>
+							<div class="controls">
+								<input required="required" type="text" name="state" id="state">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="zip" class="control-label">Zip</label>
+							<div class="controls">
+								<input required="required" type="text" name="zip" id="zip"  >
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="visa_status" class="control-label">Visa Status</label>
+							<div class="controls">
+								<input required="required" type="text" name="visa_status" id="visa_status">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="portfolio_link" class="control-label">Portfolio Link</label>
+							<div class="controls">
+								<input required="required" type="text" name="portfolio_link" id="portfolio_link">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="linkedin" class="control-label">Linkedin</label>
+							<div class="controls">
+								<input required="required" type="text" name="linkedin" id="linkedin">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="source" class="control-label">Source</label>
+							<div class="controls">
+								<input required="required" type="text" name="source" id="source">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="resume_link" class="control-label">Resume_link</label>
+							<div class="controls">
+								<input required="required" type="text" name="resume_link" id="resume_link">
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="ts_update" class="control-label">Ts Update</label>
+							<div class="controls">
+								<div class="input-append">
+							    	<input required="required" type="text" name="ts_update" id="ts_update" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+									<span class="add-on"><i class="icon-calendar"></i></span>
+								</div>
+							</div>
+						</div>
+						<div id="skill_list">
+							<div class="control-group required">
+								<label for="skills" class="control-label">Skills</label>
+								<div class="controls form-inline">
+									<select  id="skill_name0"  name="skill_name0">
+										{% for a in skills%}
+										<option value="{{a}}">{{a}}</option> 
+										{% endfor %}		
+									</select></br>
+									<input required="required" type="text" name="skill_year0" id="skill_year0" style="width:94px;" placeholder="year used"> 
+									<input required="required" type="text" name="skill_lvl0" id="skill_lvl0" placeholder="skill level" style="width:94px;"></br>
+									<div class="input-append">
+		    							<input required="required" type="text" name="skill_start_date0" id="skill_start_date10" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">
+										<span class="add-on"><i class="icon-calendar"></i></span>
+									</div>
+									<textarea required="required" type="text" name="skill_notes0" id="skill_notes0"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="control-group required">
+							<label for="add_skill" class="control-label">Add Skill</label>
+							<div class="controls">
+								<button type="button" name="add_skill" id="add_skill"><i class="glyphicon glyphicon-plus">Add</i></button>
+							</div>
+						</div>
+					</div>
+					<div class="dialogModal_footer">
+						<button  id="add_confirm" type="submit" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+						<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	 	
+		<div id="editButtons" class="">			
+			<button id="add_button" class="btn btn-default" type="button" data-dialogmodal-bind="#addbox_div">Add</button>
+		</div>
+
+		<table id="table1" class="display" cellspacing="0" width="80%">
+			<thead>
+				<tr>
+					<th></th>
+					<th></th>
+					<th><strong>ID</strong></th>
+					<th><strong>First Name</strong></th>
+					<th><strong>Last Name</strong></th>
+					<th><strong>Email</strong></th>
+					<th><strong>Phone</strong></th>
+					<th><strong>Skills</strong></th>
+					<th><strong>Submittal Tarck</strong></th>
+				</tr>
+			</thead>
+		</table>
+		{% endblock %}
+
+		{% else %}
+		hehe 
+		{% endif %}
+	</div>
+	<div id="show_box">
+		<div id="show_div"  class="dialog_content" style="display:none">
+				<div class="dialogModal_header">Details</div>
+				<div class="dialogModal_content">
+				<table id="table_show" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th><strong>Id</strong></th>
+							<th><strong>skill</strong></th>
+							<th><strong>skill_lvl</strong></th>
+							<th><strong>skill_start_date</strong></th>
+							<th><strong>skill_year</strong></th>
+							<th><strong>skill_notes</strong></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="dialogModal_footer">
+			</div>
+		</div>
+	</div>
+
+	<div id="show_box2">
+		<div id="show_div2"  class="dialog_content" style="display:none">
+				<div class="dialogModal_header">Details</div>
+				<div class="dialogModal_content">
+				<table id="table_show2" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th><strong>job_id</strong></th>
+							<th><strong>position_title</strong></th>
+							<th><strong>recruiter</strong></th>
+							<th><strong>submittal_time</strong></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="dialogModal_footer">
+			</div>
+		</div>
+	</div>
+
+<script src="/static/popup/popModal.min.js"></script>
+<script type="text/javascript">
+
+var dataSet = {{data|safe}};
+
+var skill_num = 1;
+
+function format ( d ) {
+    return '<strong>Address</strong>: ' + d.address + ', '+ d.city + ', '+ d.state + ', '+ d.zip + '<br>'+
+    	'<strong>Type </strong>: ' + d.type +'<br>'+
+    	'<strong>Visa Status</strong>: '+ d.visa_status +' <br/>' +
+        '<strong>Portfolio Link</strong>: ' + d.portfolio_link +'<br>'+
+        '<strong>Linkedin</strong>: ' + d.linkedin +'<br>'+
+        '<strong>Ts Update</strong>: ' + d.ts_update +'<br>'+
+        '<strong>Resume Link</strong>: ' + d.resume_link +'<br>'+
+        '<strong>Source</strong>: ' + d.source +'<br>';
+}
+
+function add_skill_func () {
+	skill_num = skill_num + 1;
+	var append_html = '\
+		<div class="control-group required">\
+		<label for="skills" class="control-label">skills</label>\
+		<div class="controls form-inline">\
+		<select  id="skill_name'+skill_num+'" name="skill_name'+skill_num+'" >\
+		{% for a in skills%}\
+		<option value="{{a}}">{{a}}</option> \
+		{% endfor %}\
+		</select></br>\
+		<input required="required" type="text" name="skill_year'+skill_num+'" id="skill_year'+skill_num+'" style="width:94px;" placeholder="year used">\
+		<input required="required" type="text" name="skill_lvl'+skill_num+'" id="skill_lvl'+skill_num+'" placeholder="skill level" style="width:94px;"></br>\
+		<div class ="input-append"> \
+		<input required="required" type="text" name="skill_start_date'+skill_num+'" id="skill_start_date1'+skill_num+'" data-date-language="en-US" data-date-format="yyyy-mm-dd" data-bootstrap-widget="datepicker">\
+		<span class="add-on"><i class="icon-calendar"></i>\
+		</span>\
+		</div> \
+		<textarea required="required" type="text" name="skill_notes'+skill_num+'" id="skill_notes'+skill_num+'"></textarea>\
+		</div>\
+		</div>';
+	$('#skill_list').append(append_html);
+}
+
+$(document).ready( function () {
+	var dt = $('#table1').DataTable( {
+		"responsive": true,
+		"paging": true,
+		"ordering" : true,
+		"data": dataSet["data"],
+		"columns": [
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ""
+            },
+            {
+                "class":          "submit-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": '<button class="submit_button btn btn-default" type="button" data-dialogmodal-bind="#submitbox_div">Add</button>'
+            },
+            { 	
+            	"class": "id_row",
+            	"data": "id" 
+            },
+            { 
+            	"class": "first_name_row",
+            	"data": "first_name" 
+            },
+            { 	
+            	"class": "last_name_row",
+            	"data": "last_name" 
+            },
+            { "data": "email" },
+            { "data": "phone" },
+            { "data": "skills" },
+            { "data": "job_ids" }
+        ],
+         "order": [[1, 'asc']]
+	} );
+
+	$('.submit-control').removeClass('sorting_asc');
+	$('.submit-control').addClass('sort_disabled');
+
+	$('#submit_button').on('click', function() {
+		// collect data
+		var cid = $('#table1 tbody tr td:nth-of-type(3)').text();		
+		// var firstName = $('#table1 tbody tr td:nth-of-type(4)').text();
+		var firstName = $('#table1 tbody tr td.first_name_row').text();
+		// var lastName = $('#table1 tbody tr td:nth-of-type(5)').text();
+		var lastName = $('#table1 tbody tr td.last_name_row').text();
+		var name = firstName + " " + lastName;
+		var recruiter = '{{ name }}';
+
+		// console.log(cid);
+		document.getElementById("candidate_field").innerHTML = '<option value="1">'+ name +'</option>';
+		document.getElementById("recruiter").innerHTML = '<option value="1">'+ recruiter +'</option>';
+	});
+
+	var html_add = '';
+	$('#add_button').click(function(){
+		$('#addbox_div').dialogModal({
+			onLoad: function() {
+				html_add = $('#addbox').html();
+				$('#addbox').empty()
+			},
+		onOkBut: function() {
+			$('#addbox').html(html_add);
+			return false;
+		},
+		onClose: function() {
+			$('#addbox').html(html_add);
+		},
+		onCancelBut: function() {
+			$('#addbox').html(html_add);
+		},
+		});
+
+		$('#add_skill').bind('click', add_skill_func);
+	});
+
+	var html_add = '';
+	$('.submit_button').click(function(){
+		$('#submitbox_div').dialogModal({
+			onLoad: function() {
+				html_add = $('#submitbox').html();
+				$('#submitbox').empty()
+			},
+		onOkBut: function() {
+			$('#submitbox').html(html_add);
+			return false;
+		},
+		onClose: function() {
+			$('#submitbox').html(html_add);
+		},
+		onCancelBut: function() {
+			$('#submit').html(html_add);
+		},
+		});
+
+		var firstName = $(this).parent().parent().children()[3].innerHTML;
+		var lastName = $(this).parent().parent().children()[4].innerHTML;
+		var fullName = firstName + " " + lastName;
+		var recruiter_name = '{{name}}';
+
+		document.getElementById("candidate_field").innerHTML = '<option value="1">'+ fullName +'</option>';
+		document.getElementById("recruiter").innerHTML = '<option value="1">'+ recruiter_name +'</option>';
+
+		$('.requisition_group').bind('click', function(){
+			$(".dialogModal").css("display", "none");  
+			swal({   
+			        title: "Are you sure?",   
+			        text: "You will be redirect to other pages!",   
+			        type: "warning",   
+			        showCancelButton: true,   
+			        confirmButtonColor: "#DD6B55",   
+			        confirmButtonText: "Yes, Redirect!",   
+			        cancelButtonText: "No, cancel plx!",   
+			        closeOnConfirm: false,
+			        closeOnCancel: false
+			}, 
+			function(isConfirm){   
+				if (isConfirm) {     
+				    swal("Redirecting!", "You will be redirected soon.", "success");   
+				    self.location = '/requisition/';
+				} else {			       
+				    $(".dialogModal").css("display", "none");
+				    $(".sweet-alert").removeClass("visible");				        
+				    $(".sweet-overlay").css("display", "none");			        
+				    $(".sweet-alert").css("display", "none");
+				    $(".dialogModal").css("display", "inline");
+				}
+			});
+		});
+
+		$('#hourly_rate , #current_year_rate, #expected_year_rate').keyup( function() {
+	       
+	       var a = $('#hourly_rate').val();
+	       var b = $('#current_year_rate').val();
+	       var c = $('#expected_year_rate').val();
+	       if (a != '' && b == '' ) {
+	       	 	$('#current_year_rate').attr('disabled', 'disabled');
+	       	 	$('#expected_year_rate').attr('disabled', 'disabled');
+	       	 	$('#current_year_rate').removeAttr('required');
+	       	 	$('#expected_year_rate').removeAttr('required');
+	       	 	$('#current_year_rate').attr('value','');
+	       	 	$('#expected_year_rate').attr('value','');
+
+	       } else if (a == '' &&  b == ''){
+	       		$('#current_year_rate').removeAttr('disabled');
+	       	 	$('#expected_year_rate').removeAttr('disabled');
+	       	 	$('#current_year_rate').attr('required', 'required');
+	       	 	$('#expected_year_rate').attr('required', 'required');
+	       	 	$('#hourly_rate').removeAttr('disabled');
+	       	 	$('#hourly_rate').attr('required', 'required');
+
+	       } else if (b != '' && a == '') {
+	       		$('#hourly_rate').attr('disabled', 'disabled');
+	       	 	$('#expected_year_rate').removeAttr('disabled');
+	       	 	$('#hourly_rate').removeAttr('required');
+	       	 	$('#expected_year_rate').attr('required','required');
+	       	 	$('#hourly_rate').attr('value','');
+	       } 
+
+	    } );
+	});
+
+	var dt_show;
+	var html_show = '';
+ 	$('#table1 tbody').on( 'click', 'tr td:nth-of-type(8)', function () {
+ 		var id = $(this).prev().prev().prev().prev().prev().text();
+ 		$('#show_div').dialogModal({
+			onLoad: function() {
+				html_show = $('#show_box').html();
+				$('#show_box').empty()
+			},
+			onOkBut: function() {
+				$('#show_box').html(html_show);
+			},
+			onClose: function() {
+				$('#show_box').html(html_show);
+			},
+			onCancelBut: function() {
+				$('#show_box').html(html_show);
+			},
+		});
+
+		dt_show = $('#table_show').DataTable( {
+			"ajax": '/get_party_skill/?id=' + id,
+		});
+ 	});
+
+	var dt_show2;
+	var html_show2 = '';
+ 	$('#table1 tbody').on( 'click', 'tr td:nth-of-type(9)', function () {
+ 		var id = $(this).prev().prev().prev().prev().prev().prev().text();
+ 		$('#show_div2').dialogModal({
+			onLoad: function() {
+				html_show = $('#show_box2').html();
+				$('#show_box2').empty()
+			},
+			onOkBut: function() {
+				$('#show_box2').html(html_show);
+			},
+			onClose: function() {
+				$('#show_box2').html(html_show);
+			},
+			onCancelBut: function() {
+				$('#show_box2').html(html_show);
+			},
+		});
+
+		dt_show = $('#table_show2').DataTable( {
+			"ajax": '/get_submittal_tarck/?id=' + id,
+		});
+ 	});
+
+    // Array to track the ids of the details displayed rows
+    var detailRows = [];
+ 
+    $('#table1 tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = dt.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    });
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    dt.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child').trigger( 'click' );
+        } );
+    } );
+});	
+</script>
+</body>
+</html>

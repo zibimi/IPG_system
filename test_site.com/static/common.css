@@ -1,0 +1,9 @@
+
+.datepicker {
+	z-index: 888889 !important;
+}
+
+
+select {
+	max-width: 200px;
+}

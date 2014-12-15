@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %} {% load url from future %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Intellipro Group Recruiting System</title>
+<meta name="description" content="">
+{% bootstrap_stylesheet_tag %} 
+{% bootstrap_stylesheet_tag "responsive"%}
+
+<script src="/static/jquery-1.11.1.min.js"></script>
+<script src="/static/sweetalert-master/lib/sweet-alert.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="/static/sweetalert-master/lib/sweet-alert.css">
+<link rel="stylesheet" type="text/css" href="/static/jquery.dataTables.min.css">
+<script src="/static/jquery.dataTables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/popup/popModal.min.css">
+<link rel="stylesheet" type="text/css" href="/static/common.css">
+
+<link href="/static/multiselect/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/static/datepicker/css/datepicker.css" type="text/css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="/static/bootstrap_toolkit/js/init_datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/requisition.css">
+<style>
+#filter_button:hover, #add_button:hover {
+	cursor: pointer;
+}
+</style>
+{% bootstrap_javascript_tag %} 
+{% block extra_head %}
+{% endblock %}
+</head>
+<body>
+{% if name %}
+	{% csrf_token %}
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <span class="brand">Hello {{ name }}</span>
+	        <ul class="nav">
+	            <li><a href="/joblist/">Job</a></li>
+	            <li><a href="/profile/">Profile</a></li>
+	            <!--<li><a href="/timesheet/">Timesheet</a></li>-->	            
+	            <li role="button"><a href="/logout/">Log Out</a></li>
+	        </ul>
+	    </div>
+	</div>
+	<div>
+		{% block content%}
+		<div id="box">
+			<div id="filter"  class="dialog_content" style="display:none">
+				<div class="dialogModal_header">Requisition Filter</div>
+				<div class="dialogModal_content">
+					<table>
+						<tbody>
+							<tr> 	
+								<td><lable>Client:<br/> <select id="s_client">
+									<option value="all" selected="selected">All</option> 
+									{% for a in client%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>Job Title: <br/><select id="s_job_title">
+										<option value="all" selected="selected">All</option> 
+										{% for a in fdict.job_title %}
+										<option value="{{a}}">{{a}}</option>
+										{% endfor %}
+								</select></lable></td>
+								<td><lable>Recruiter: <br/><select id="s_recruiter">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.recruiter%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								
+							</tr>
+							<tr>
+								<td><lable>Priority: <br/><select id="s_priority">
+									<option value="all" selected="selected">All</option> 
+									{% for a in priority%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select></lable></td>
+								<td><lable>Status: <br/><select id="s_req_status">
+									<option value="all" selected="selected">All</option> 
+									{% for a in reqStatus%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>Location: <br/><select id="s_loc">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.loc%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select></lable></td>
+								
+							</tr>
+							<tr>
+								<td><lable>City:<br/> <select id="s_city">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.city%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>State: <br/><select id="s_state">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.state%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select> </lable></td>
+								<td><lable>Req Contac: <br/><select id="s_req_contact">
+									<option value="all" selected="selected">All</option> 
+									{% for a in fdict.req_contact%}
+										<option value="{{a}}">{{a}}</option>
+									{% endfor %}
+								</select></lable></td>
+								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="dialogModal_footer">
+					<button  id="filter_confirm" type="button" class="btn btn-default" data-dialogmodal-but="ok">Confirm</button>
+					<button type="button" class="btn btn-default" data-dialogmodal-but="cancel">Cancel</button>
+				</div>
+			</div>
+		</div> <!-- id="box" -->
+ 		
+
+
+		<div id="applybox">
+			<div id="applybox_div"  class="dialog_content"  style="display:none">
+				
+				<form role="form" action='/uploadcv/'  enctype="multipart/form-data" method='POST'  class="form-horizontal">
+					<div class="dialogModal_header">Update Profile</div>
+					<div class="dialogModal_content">
+	
+						<div class="control-group required">
+							<label for="inputfile" class="control-label">UPLOAD YOUR CV</label>
+							<div class="controls">
+							 <input type="file" name="fileUpload" id="fileUpload" value="" required="" disabled='disabled'>
+							</div>
+						</div>
+						<input id="related_id" type="text"  style="display:none"  name="related_id" value="" required="" ></input>
+						<br/>
+						<div class="control-group required">
+							<div class="controls">
+							 <p for="inputfile" class="help-block" ><input type="checkbox" name="policycheck" id="policycheck" value="" required="">  I have read and understood the privacy policy</p>
+							</div>
+						</div>
+					</div>
+					<div class="dialogModal_footer">
+					 <button type="submit" class="btn btn-default">Submit Your Application</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+		<div id="editButtons" class="">
+			<button id="filter_button" class="btn btn-default" type="button" data-dialogmodal-bind="#filter">Filter</button>
+		</div>
+ 		
+		<table id="table1" class="display" cellspacing="0" width="90%">
+			<thead>
+				<tr>
+					<th></th>
+					<th></th>
+					<th><strong>ID</strong></th>
+					<th><strong>Req_Date</strong></th>
+					<th><strong>Req_Status</strong></th>
+					<th><strong>Client</strong></th>
+					<th><strong>Recruiter</strong></th>
+					<th><strong>Job_ID</strong></th>
+					<th><strong>Job_Title</strong></th>
+					<th><strong>Location</strong></th>
+					<th><strong>Openings</strong></th>
+					<th><strong>Keywords</strong></th>
+					<th><strong>Req_Contact</strong></th>
+					<th><strong>City</strong></th>
+					<th><strong>State</strong></th>
+					<th><strong>Start_Date</strong></th>
+					<th><strong>End_Date</strong></th>
+					<th><strong>Req_Approved</strong></th>
+					<th><strong>Priority</strong></th>
+					<th><strong>Days_Left<strong><th>
+				</tr>
+			</thead>
+		</table>
+		{% endblock %}
+	 
+	</div>
+	{% else %}
+	hehe 
+	{% endif %}
+	<div id="show_box">
+		<div id="show_div"  class="dialog_content" style="display:none">
+			<div class="dialogModal_header">Details</div>
+			<div class="dialogModal_content">
+				<table id="table_show" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th><strong>Id</strong></th>
+							<th><strong>skill_name</strong></th>
+							<th><strong>skill_desc</strong></th>
+							<th><strong>skill_catagory</strong></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="dialogModal_footer"></div>
+		</div>
+	</div>
+
+<script src="/static/popup/popModal.min.js"></script>
+<script src="/static/multiselect/js/jquery.multi-select.js" type="text/javascript"></script>
+<script type="text/javascript">
+var dataSet = {{data|safe}};
+
+function format ( d ) {
+    return '<strong>Emp Type</strong>: ' + d.emp_type+'<br>'+
+    	'<strong>Hours</strong>: ' + d.hours + '<br>' +
+    	'<strong>Category</strong>: ' + d.category + '<br>' +
+    	'<strong>Rate</strong>: $' + d.rate+'<br>'+
+    	'<strong>Duration</strong>: '+d.duration+' <br/>' +
+        '<strong>Job_desc</strong>: ' + d.job_description+'<br>'+
+        '<strong>Hire_mgr_notes</strong>: ' + d.req_contact_notes+'<br>';
+
+}
+
+var s_job_title = $('#s_job_title').val();
+var s_recruiter = $('#s_recruiter').val();
+var s_priority = $('#s_priority').val();
+var s_req_status = $('#s_req_status').val();
+var s_loc = $('#s_loc').val();
+var s_city = $('#s_city').val();
+var s_state = $('#s_state').val();
+var s_req_contact = $('#s_req_contact').val();
+var s_client = $('#s_client').val();
+
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var i = 2;
+
+        var d_req_date = data[i++];
+        var d_req_status = data[i++];
+        var d_client = data[i++];
+		var d_recruiter = data[i++];
+        var d_job_id = data[i++];
+        var d_job_title = data[i++];
+        var d_loc = data[i++];
+        var d_openings = data[i++];
+        i++;
+        var d_req_contact = data[i++];
+        var d_city = data[i++];
+        var d_state = data[i++];
+        var d_start_date = data[i++];
+        var d_end_date = data[i++];
+        var d_req_approved = data[i++];
+        var d_priority = data[i++];
+
+        if ((s_job_title == "all" || s_job_title == d_job_title) && 
+            (s_recruiter == "all" || s_recruiter == d_recruiter) && 
+            (s_priority == "all" || s_priority == d_priority) && 
+            (s_req_status == "all" || s_req_status == d_req_status) && 
+            (s_loc == "all" || s_loc == d_loc) && 
+            (s_city == "all" || s_city == d_city) && 
+            (s_state == "all" || s_state == d_state) && 
+            (s_req_contact == "all" || s_req_contact == d_req_contact) &&
+            (s_client == "all" || s_client == d_client))
+        {	
+            return true;
+        }
+        return false;
+    }
+);
+
+var keywords_values = [];
+
+$(document).ready( function () {
+	var dt = $('#table1').DataTable( {
+		"responsive": true,
+		"paging": true,
+		"ordering" : true,
+		"data": dataSet["data"],
+		"columns": [
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ""
+            },
+            {
+                "class":          "submit-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": '<button class="upload_cv submit_button btn btn-default" type="button" data-dialogmodal-bind="#submitbox_div">Apply</button>'
+            },
+			{ 	
+				"class": "id_row",
+				"data": "id" 
+			},
+            { "data": "req_date"},
+            { "data": "req_status" },
+            { "data": "client" },
+            { "data": "recruiter" },
+            { "data": "job_id" },
+            { "data": "job_title" },
+            { "data": "loc" },
+            { "data": "openings" },
+            { "data": "keywords" },
+            { "data": "req_contact" },
+            { "data": "city" },
+            { "data": "state" },
+            { "data": "start_date" },
+            { "data": "end_date" },
+            { "data": "req_approved" },
+            { "data": "priority" },
+            { "data": "days_left" },
+            {
+                "class":          "job_desc_row",
+                "orderable":      false,
+                "data":           "job_description",
+                "defaultContent": "jd"
+            }
+
+        ],
+         "order": [[1, 'asc']]
+	} );
+
+	// Event listener to the two range filtering inputs to redraw on input
+	var html_filter='';
+	$('#filter_button').click(function(){
+		$('#filter').dialogModal({
+			onLoad: function() {
+				html_filter = $('#box').html();
+				$('#box').empty()
+			},
+			onOkBut: function() {
+			s_job_title = $('#s_job_title').val();
+			s_recruiter = $('#s_recruiter').val();
+			s_priority = $('#s_priority').val();
+			s_req_status = $('#s_req_status').val();
+			s_loc = $('#s_loc').val();
+			s_city = $('#s_city').val();
+			s_state = $('#s_state').val();
+			s_req_contact = $('#s_req_contact').val();
+			s_client = $('#s_client').val();
+			dt.draw();
+			$('#box').html(html_filter);
+		},
+		onClose: function() {
+			$('#box').html(html_filter);
+		},
+		onCancelBut: function() {
+			$('#box').html(html_filter);
+		},
+		});
+	});
+
+	var html_apply = '';
+		
+	$('.upload_cv').click(function(){
+		var id = $(this).parent().next().text()
+		$('#applybox_div').dialogModal({
+		onLoad: function() {
+				html_apply = $('#applybox').html();
+				$('#applybox').empty();
+				$('#policycheck').click(function(){
+					$('#related_id').attr('value',id);
+ 
+					a = $("#policycheck").prop('checked');
+					if (a) {
+						$('#fileUpload').removeAttr('disabled')
+					} else {
+						$('#fileUpload').attr('disabled', 'disabled')
+					}
+					 
+				});
+		},
+		onOkBut: function() {
+
+			$('#applybox').html(html_apply);
+		},
+		onClose: function() {
+			$('#applybox').html(html_apply);
+		},
+		onCancelBut: function() {
+			$('#applybox').html(html_apply);
+		},
+		});
+	});
+
+
+	var dt_show;
+	var html_show = '';
+ 	$('#table1 tbody').on( 'click', 'tr td:nth-of-type(12)', function () {
+ 		var id = $(this).prev().prev().prev().prev().prev().prev().prev().prev().prev().text();
+ 		$('#show_div').dialogModal({
+			onLoad: function() {
+				html_show = $('#show_box').html();
+				$('#show_box').empty()
+			},
+			onOkBut: function() {
+				$('#show_box').html(html_show);
+			},
+			onClose: function() {
+				$('#show_box').html(html_show);
+			},
+			onCancelBut: function() {
+				$('#show_box').html(html_show);
+			},
+		});
+
+		dt_show = $('#table_show').DataTable( {
+			"ajax": '/get_skill/?id=' + id,
+		});
+ 	});
+
+    // Array to track the ids of the details displayed rows
+    var detailRows = [];
+ 
+    $('#table1 tbody').on( 'click', 'tr td:first-child', function () {
+        var tr = $(this).closest('tr');
+        var row = dt.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    } );
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    dt.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td:first-child').trigger( 'click' );
+        } );
+    } );
+
+});	
+</script>
+</body>
+</html>
